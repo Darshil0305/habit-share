@@ -1,10 +1,11 @@
+'use client'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: (i) => ({
+  hidden: { opacity: 0, y: 20 },
+  visible: (i: number) => ({
     opacity: 1,
-    x: 0,
+    y: 0,
     transition: {
       delay: i * 0.1,
       type: 'spring',
@@ -15,31 +16,15 @@ const itemVariants = {
   exit: { opacity: 0, x: 20 }
 }
 
-export default function HabitList({ 
-  habits = [
-    { id: 1, name: 'Morning Meditation', frequency: 'daily', streak: 3, completed: false },
-    { id: 2, name: 'Exercise', frequency: 'daily', streak: 5, completed: true },
-    { id: 3, name: 'Read a book', frequency: 'weekly', streak: 2, completed: false }
-  ], 
-  setHabits = () => {} 
+export default function HabitList({
+  habits,
+  onToggleComplete,
+  onDelete
+}: {
+  habits: any[]
+  onToggleComplete: (id: string) => void
+  onDelete: (id: string) => void
 }) {
-
-  const toggleComplete = (id) => {
-    setHabits(prev => prev.map(habit => 
-      habit.id === id 
-        ? { 
-            ...habit, 
-            completed: !habit.completed,
-            streak: !habit.completed ? habit.streak + 1 : habit.streak
-          } 
-        : habit
-    ))
-  }
-
-  const deleteHabit = (id) => {
-    setHabits(prev => prev.filter(habit => habit.id !== id))
-  }
-
   return (
     <div className="space-y-3">
       <AnimatePresence>
@@ -53,20 +38,20 @@ export default function HabitList({
             custom={index}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="bg-gray-800/50 backdrop-blur-md rounded-xl p-4 flex items-center justify-between"
+            className="p-4 rounded-xl bg-gray-800/50 backdrop-blur-md border border-gray-700 flex items-center justify-between"
           >
             <div className="flex items-center space-x-3">
               <motion.button
-                onClick={() => toggleComplete(habit.id)}
+                onClick={() => onToggleComplete(habit.id)}
                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${habit.completed ? 'bg-indigo-600 border-indigo-600' : 'border-gray-500'}`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
                 {habit.completed && (
-                  <motion.svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-4 w-4" 
-                    viewBox="0 0 20 20" 
+                  <motion.svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
                     fill="currentColor"
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -84,7 +69,7 @@ export default function HabitList({
               </div>
             </div>
             <motion.button
-              onClick={() => deleteHabit(habit.id)}
+              onClick={() => onDelete(habit.id)}
               className="text-gray-400 hover:text-red-400 transition-colors"
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.8 }}
