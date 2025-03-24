@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-background text-white;
+}
+
+.glass-effect {
+  @apply backdrop-blur-lg bg-opacity-20 border border-opacity-10;
+}
