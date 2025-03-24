@@ -1,77 +1,40 @@
-import { useState } from 'react'
-import { doc, updateDoc } from 'firebase/firestore'
-import { db } from '../firebase'
+import React from 'react'
 import { motion } from 'framer-motion'
 
-export default function HabitCard({ habit }) {
-  const [isCompleted, setIsCompleted] = useState(false)
-  const [showDetails, setShowDetails] = useState(false)
-
-  const handleComplete = async () => {
-    const today = new Date().toISOString().split('T')[0]
-    const updatedDates = [...habit.completedDates, today]
-    await updateDoc(doc(db, 'habits', habit.id), {
-      completedDates: updatedDates,
-      streak: habit.streak + 1,
-      totalCompletions: habit.totalCompletions + 1
-    })
-    setIsCompleted(true)
-  }
-
-  const completionPercentage = Math.round(
-    (habit.totalCompletions / (habit.streak || 1)) * 100
-  )
+export default function HabitCard({ habit = {} }) {
+  const { 
+    title = 'New Habit', 
+    description = 'No description provided', 
+    streak = 0 
+  } = habit
 
   return (
-    <motion.div
-      className="glass-effect p-4 rounded-lg cursor-pointer"
+    <motion.div 
+      className="p-4 border border-white/10 rounded-lg glass-effect hover:shadow-glow-primary transition-all"
       whileHover={{ scale: 1.02 }}
-      onClick={() => setShowDetails(!showDetails)}
+      whileTap={{ scale: 0.98 }}
     >
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">{habit.name}</h2>
-        <span className="text-sm text-gray-400">{habit.frequency}</span>
-      </div>
-      <div className="mt-4">
-        <div className="flex items-center gap-2">
-          <div className="w-full bg-surface rounded-full h-2">
-            <div
-              className="bg-primary h-2 rounded-full"
-              style={{ width: `${completionPercentage}%` }}
-            ></div>
-          </div>
-          <span className="text-sm">{completionPercentage}%</span>
-        </div>
-        <div className="mt-2 flex items-center justify-between">
-          <p className="text-sm">Streak: {habit.streak} days</p>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              handleComplete()
-            }}
-            disabled={isCompleted}
-            className={`px-4 py-2 rounded ${
-              isCompleted ? 'bg-green-500' : 'bg-primary hover:bg-opacity-80'
-            } text-black`}
-          >
-            {isCompleted ? 'Completed' : 'Complete'}
-          </button>
-        </div>
-        {showDetails && (
-          <div className="mt-4 space-y-2">
-            <div className="flex flex-wrap gap-2">
-              {habit.tags?.map((tag) => (
-                <span key={tag} className="px-2 py-1 bg-surface rounded text-sm">
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <p className="text-sm">Category: {habit.category}</p>
-            <p className="text-sm">
-              Total Completions: {habit.totalCompletions}
-            </p>
-          </div>
-        )}
+      <h3 className="text-lg font-bold mb-2">
+        {title.split('').map((letter, i) => (
+          <span key={i} className="letter-box text-pop">
+            {letter}
+          </span>
+        ))}
+      </h3>
+      <p className="text-sm">
+        {description.split(' ').map((word, i) => (
+          <span key={i} className="text-pop">
+            {word}{' '}
+          </span>
+        ))}
+      </p>
+      <div className="mt-3 flex gap-2">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <div 
+            key={i} 
+            className={`w-3 h-3 rounded-full ${i < streak ? 'bg-primary' : 'bg-white/10'}`}
+          />
+        ))}
       </div>
     </motion.div>
   )

@@ -1,8 +1,1 @@
-{
-  "firebase.js -> firebase/messaging": {
-    "id": "firebase.js -> firebase/messaging",
-    "files": [
-      "static/chunks/node_modules_firebase_messaging_dist_esm_index_esm_js.js"
-    ]
-  }
-}
+{}

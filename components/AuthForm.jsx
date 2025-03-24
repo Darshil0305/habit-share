@@ -1,23 +1,38 @@
 import { useState } from 'react'
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../firebase'
 
 export default function AuthForm({ mode }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    try {
-      if (mode === 'signup') {
-        await createUserWithEmailAndPassword(auth, email, password)
+    const users = JSON.parse(localStorage.getItem('users')) || {}
+
+    if (mode === 'signup') {
+      if (users[email]) {
+        setError('User already exists')
       } else {
-        await signInWithEmailAndPassword(auth, email, password)
+        users[email] = { password }
+        localStorage.setItem('users', JSON.stringify(users))
+        alert('Account created successfully!')
+        resetForm()
       }
-    } catch (err) {
-      setError(err.message)
+    } else {
+      if (users[email] && users[email].password === password) {
+        localStorage.setItem('currentUser', email)
+        alert('Login successful!')
+        resetForm()
+      } else {
+        setError('Invalid email or password')
+      }
     }
+  }
+
+  const resetForm = () => {
+    setEmail('')
+    setPassword('')
+    setError('')
   }
 
   return (
