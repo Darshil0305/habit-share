@@ -1,12 +1,34 @@
-import React from 'react'
+import { motion } from 'framer-motion'
 
 export default function WidgetPreview() {
   return (
-    <div className="glass-effect p-6 rounded-lg">
-      <h3 className="text-lg font-bold mb-4">Widget Preview</h3>
-      <div className="aspect-square bg-white/10 rounded-lg flex items-center justify-center">
-        <p className="text-sm text-white/50">Widget will appear here</p>
+    <motion.div 
+      className="glass-effect p-6 rounded-lg"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <h2 className="text-xl font-semibold mb-4">Widget Preview</h2>
+      <div className="space-y-4">
+        <div className="p-4 rounded-lg bg-surface">
+          <div className="flex items-center justify-between">
+            <span>Daily Meditation</span>
+            <span className="text-primary">🔥 5</span>
+          </div>
+        </div>
+        <div className="p-4 rounded-lg bg-surface">
+          <div className="flex items-center justify-between">
+            <span>Morning Run</span>
+            <span className="text-primary">🔥 3</span>
+          </div>
+        </div>
+        <div className="p-4 rounded-lg bg-surface">
+          <div className="flex items-center justify-between">
+            <span>Water Intake</span>
+            <span className="text-primary">🔥 7</span>
+          </div>
+        </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

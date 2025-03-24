@@ -1,98 +1,54 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { addDoc, collection } from 'firebase/firestore'
+import { db } from '../firebase'
 
 export default function HabitForm({ setHabits }) {
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
+  const [habit, setHabit] = useState('')
   const [frequency, setFrequency] = useState('daily')
-  const [deadline, setDeadline] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!name.trim()) return
+    if (!habit.trim()) return
 
     const newHabit = {
-      id: Date.now(),
-      name,
-      description,
+      name: habit,
       frequency,
-      deadline: deadline || null,
-      completed: false,
       streak: 0,
-      createdAt: new Date().toISOString()
+      completed: false,
+      createdAt: new Date(),
     }
 
-    setHabits(prev => [...prev, newHabit])
-    setName('')
-    setDescription('')
-    setFrequency('daily')
-    setDeadline('')
+    const docRef = await addDoc(collection(db, 'habits'), newHabit)
+    setHabits((prev) => [...prev, { id: docRef.id, ...newHabit }])
+    setHabit('')
   }
 
   return (
-    <motion.form 
-      onSubmit={handleSubmit}
-      className="bg-gray-800/50 backdrop-blur-md rounded-xl p-6 mb-6"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <h2 className="text-xl font-bold mb-4">Add New Habit</h2>
+    <form onSubmit={handleSubmit} className="glass-effect p-6 rounded-lg mb-8">
       <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Habit Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="e.g. Morning Meditation"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Optional description"
-            rows={2}
-          />
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Frequency</label>
-            <select
-              value={frequency}
-              onChange={(e) => setFrequency(e.target.value)}
-              className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Deadline (optional)</label>
-            <input
-              type="date"
-              value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
-              className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              min={new Date().toISOString().split('T')[0]}
-            />
-          </div>
-        </div>
-        <motion.button
+        <input
+          type="text"
+          value={habit}
+          onChange={(e) => setHabit(e.target.value)}
+          placeholder="Enter a new habit"
+          className="w-full p-2 rounded bg-surface text-white"
+        />
+        <select
+          value={frequency}
+          onChange={(e) => setFrequency(e.target.value)}
+          className="w-full p-2 rounded bg-surface text-white"
+        >
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="custom">Custom</option>
+        </select>
+        <button
           type="submit"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+          className="w-full p-2 rounded bg-primary text-black font-bold"
         >
           Add Habit
-        </motion.button>
+        </button>
       </div>
-    </motion.form>
+    </form>
   )
 }

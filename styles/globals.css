@@ -2,20 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer utilities {
-  .glass-effect {
-    @apply bg-opacity-20 backdrop-blur-lg bg-clip-padding;
-  }
-  
-  .gradient-text {
-    @apply bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent;
-  }
-  
-  .shadow-glow-primary {
-    @apply shadow-[0_0_15px_rgba(99,102,241,0.3)];
-  }
-}
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 body {
-  @apply bg-gray-950 text-white;
+  @apply bg-background text-white font-sans;
+}
+
+.glass-effect {
+  @apply backdrop-blur-lg bg-opacity-20 border border-opacity-10;
+}
+
+/* Letter boxing effect */
+.letter-box {
+  @apply inline-block px-1 py-0.5 mx-0.5 bg-white/5 rounded-sm;
+  transition: all 0.2s ease;
+}
+
+.letter-box:hover {
+  @apply bg-primary/20 transform scale-110;
+}
+
+/* Text animation */
+.text-pop {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.text-pop:hover {
+  transform: translateY(-2px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-white/5;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/80;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

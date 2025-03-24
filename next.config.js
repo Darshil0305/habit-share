@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    domains: ['lh3.googleusercontent.com'],
+  },
   experimental: {
     appDir: true,
   },
@@ -7,15 +11,15 @@ const nextConfig = {
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
+        module: false,
         fs: false,
         path: false,
-        crypto: require.resolve('crypto-browserify'),
-        stream: require.resolve('stream-browserify'),
-        buffer: require.resolve('buffer/')
+        os: false,
+        crypto: false
       }
     }
     return config
   }
 }
 
-module.exports = nextConfig
+export default nextConfig
